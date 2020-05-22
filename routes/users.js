@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userInfo = require('../models/Users');
+const threads = require('../models/Threads');
 
 router.get('/homepage', (req, res) => { // something with oauth
     res.send('landing page'); 
@@ -22,7 +23,7 @@ router.post('/user-traits', async (req, res) => { // writing user in db (name, a
     }
 });
 
-router.get('/user/:id', async (req, res) => { // i feel like i need to look back on this
+router.get('/user/:id', async (req, res) => { // show specific user
     try {
         const specificUser = await userInfo.findById(req.params.id);
         res.json(specificUser);
@@ -31,12 +32,26 @@ router.get('/user/:id', async (req, res) => { // i feel like i need to look back
     }
 });
 
-router.post('/create-question', (req, res) => { // write question to database // * all users can modify the comments (answers)
-    res.send('create question here');
+router.post('/create-thread', async (req, res) => { // writing new threads in db
+    const newThread = new threads({
+        title: req.body.title,
+        likes: req.body.likes
+    })
+    try {
+        const saveThread = await newThread.save();
+        res.json(saveThread);
+    } catch (error) {
+        res.json({ message: error })
+    }
 });
 
-router.get('/questions/:id', (req, res) => { // review this
-    res.send('view questions');
+router.get('/threads', async (req, res) => { // shows all threads 
+    try {
+        const allThreads = await threads.find();
+        res.json(allThreads);
+    } catch (error) {
+        res.json({ message: error });
+    }
 });
 
 module.exports = router;
