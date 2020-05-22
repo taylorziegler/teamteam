@@ -18,5 +18,5 @@ mongoose.connect(
     () => console.log("Connected to Database")
 );
 
-const api = process.env.PORT || 5000; // send requests to this port
+const api = process.env.PORT; // send requests to this port
 app.listen(api, () => { console.log(`Listening on port ${api}`)})
