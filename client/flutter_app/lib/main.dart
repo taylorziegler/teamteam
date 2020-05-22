@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// ------------------------- myhomepage -------------------------
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -85,6 +86,54 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: new BottomNavigationBar(
+          items: [
+            new BottomNavigationBarItem(
+              icon: const Icon(Icons.notifications),
+              title: new Text('Notifications'),
+            ),
+
+            new BottomNavigationBarItem(
+              icon: const Icon(Icons.star),
+              title: new Text('Home'),
+            ),
+
+            new BottomNavigationBarItem(
+              icon: const Icon(Icons.settings),
+              title: new Text('Settings'),
+            )
+          ]
+
+      ),
     );
+
   }
+}
+
+@override
+Widget build(BuildContext context) {
+  return new Scaffold(
+    appBar: new AppBar(
+      title: new Text('App Name'),
+    ),
+    bottomNavigationBar: new BottomNavigationBar(
+        items: [
+          new BottomNavigationBarItem(
+            icon: const Icon(Icons.star),
+            title: new Text('Title'),
+          ),
+
+          new BottomNavigationBarItem(
+            icon: const Icon(Icons.star),
+            title: new Text('Title'),
+          ),
+
+          new BottomNavigationBarItem(
+            icon: const Icon(Icons.star),
+            title: new Text('Title'),
+          )
+        ]
+
+    ),
+  );
 }
