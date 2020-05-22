@@ -6,7 +6,7 @@ const app = express();
 require('dotenv/config');
 
 //ROUTES 
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/api');
 
 // MIDDLEWARES
 app.use(bodyParser.urlencoded({ extended: false }));
