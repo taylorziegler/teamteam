@@ -6,7 +6,7 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     host: 'localhost',
     user: 'root',
-    password: 'senbonzakura921',
+    password: 'senbonzakura921', // may need to change
     database: 'tutorapp'
 });
 
@@ -42,8 +42,11 @@ router.get('/threads', (req, res) => { // shows all threads
     });
 });
 
+var id_thread;
+
 router.get('/threads-questions/:id', (req, res) => { // get all the questions corresponding the that thread
     const id = req.params.id;
+    id_thread = req.params.id;
     const queryString = "SELECT * FROM questions WHERE thread_id = ?"; 
     connect().query(queryString, [id], (error, rows, fields) => {
         if (error) {
@@ -58,8 +61,25 @@ router.get('/threads-questions/:id', (req, res) => { // get all the questions co
     });
 });
 
+router.post('/threads/create-question', (req, res) => { // post question to the database
+    const question = req.body.question;
+    const curr_thread = id_thread;
+    const queryString = "INSERT INTO questions (question, thread_id) VALUES (?, ?)";
+    connect().query(queryString, [question, curr_thread], (error, results, fields) => {
+        if (error) {
+            console.log("Failed to post question to database" + error);
+            res.sendStatus(500);
+            return;
+        }
+        res.end();
+    });
+});
+
+var id_question;
+
 router.get('/threads-answers/:id', (req, res) => {
     const id = req.params.id;
+    id_question = req.params.id;
     const queryString = "SELECT * FROM answers WHERE question_id = ?";
     connect().query(queryString, [id], (error, rows, fields) => {
         if (error) {
@@ -67,7 +87,24 @@ router.get('/threads-answers/:id', (req, res) => {
             res.sendStatus(500);
             return;
         }
-        res.json(rows);
+        const questions = rows.map((row) => {
+            return {answer : row.answer, likes : row.likes, id : row.id}
+        });
+        res.json(questions);
+    });
+});
+
+router.post('/threads/create-answer', (req, res) => {
+    const answer = req.body.answer;
+    const curr_question = id_question;
+    const queryString = "INSERT INTO answers (answer, question_id) VALUES (?, ?)";
+    connect().query(queryString, [answer, curr_question], (error, results, fields) => {
+        if (error) {
+            console.log("Failed to post answer to the database" + error);
+            res.sendStatus(500);
+            return;
+        }
+        res.end();
     });
 });
 
