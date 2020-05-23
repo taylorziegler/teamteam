@@ -33,8 +33,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
-  final List<Widget> _children = [Home(), Notifications(), Settings()];
+  int _currentIndex = 1;
+  final List<Widget> _children = [Notifications(), Home(), Settings()];
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +45,12 @@ class _MyHomePageState extends State<MyHomePage> {
           currentIndex: _currentIndex,
           items: [
             new BottomNavigationBarItem(
-              icon: const Icon(Icons.home),
-              title: new Text('Home'),
-            ),
-            new BottomNavigationBarItem(
               icon: const Icon(Icons.notifications),
               title: new Text('Notifications'),
+            ),
+            new BottomNavigationBarItem(
+              icon: const Icon(Icons.home),
+              title: new Text('Home'),
             ),
             new BottomNavigationBarItem(
               icon: const Icon(Icons.settings),
