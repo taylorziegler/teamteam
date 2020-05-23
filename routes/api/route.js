@@ -2,13 +2,16 @@ const express = require('express');
 const mysql = require('mysql');
 const router = express.Router();
 
+const pool = mysql.createPool({
+    connectionLimit: 10,
+    host: 'localhost',
+    user: 'root',
+    password: 'senbonzakura921',
+    database: 'tutorapp'
+});
+
 function connect() { // connection to database : mySQL
-    return connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'senbonzakura921',
-        database: 'tutorapp'
-    });
+    return pool;
 }
 
 router.post('/threads/create-topics', (req, res) => { // insert new thread in the database
