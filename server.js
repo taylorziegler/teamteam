@@ -1,25 +1,21 @@
 // PACKAGES
-const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const morgan = require('morgan');
+const express = require('express');
 const app = express();
-require('dotenv/config');
+
+// .env
+require('dotenv/config'); 
 
 //ROUTES 
-const userRoutes = require('./routes/api');
+const userRoutes = require('./routes/api/route');
 
 // MIDDLEWARES
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json())
-app.use('/', userRoutes);
-
-// DB
-mongoose.connect(
-    process.env.DB_CONNECTION,
-    { useUnifiedTopology: true, useNewUrlParser: true },
-    () => console.log("Connected to Database")
-);
+app.use(morgan('short'));
+app.use(bodyParser.json());
+app.use('/api', userRoutes);
 
 // PORTS
-const api = process.env.PORT || 5000; 
-app.listen(api, () => { console.log(`Listening on port ${api}`)})
+const rest_api = process.env.PORT || 5000; 
+app.listen(rest_api, () => { console.log(`Listening on port ${rest_api}`)})
