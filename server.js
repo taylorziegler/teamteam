@@ -4,9 +4,6 @@ const morgan = require('morgan');
 const express = require('express');
 const app = express();
 
-// .env
-require('dotenv/config'); 
-
 //ROUTES 
 const userRoutes = require('./routes/api/route');
 
