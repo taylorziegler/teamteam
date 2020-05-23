@@ -16,9 +16,16 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            FlatButton(
+              onPressed: () {
+                /*...*/
+              },
+              child: Text("Stuck? Get help!", style: TextStyle(color: Colors.white),),
+              color: Colors.deepPurple,
+            ),
             Container(
-              child: Text("this is a test"),
-              color: Colors.lightBlueAccent,
+              child: Text("this is a test", style: TextStyle(color: Colors.white),),
+              color: Colors.deepPurple,
               padding: EdgeInsets.all(20.0),
               margin: EdgeInsets.all(20.0),
               alignment: Alignment.topLeft,
