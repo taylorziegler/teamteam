@@ -1,6 +1,5 @@
 // PACKAGES
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
 const morgan = require('morgan');
 const express = require('express');
 const app = express();
