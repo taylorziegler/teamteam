@@ -43,11 +43,10 @@ router.get('/threads', (req, res) => { // shows all threads
 });
 
 var id_thread;
-
 router.get('/threads-questions/:id', (req, res) => { // get all the questions corresponding the that thread
     const id = req.params.id;
     id_thread = req.params.id;
-    const queryString = "SELECT * FROM questions WHERE thread_id = ?"; 
+    const queryString = "SELECT * FROM questions WHERE thread_id = ? ORDER BY likes DESC"; 
     connect().query(queryString, [id], (error, rows, fields) => {
         if (error) {
             console.log("Failed to fetch questions" + error);
@@ -76,11 +75,10 @@ router.post('/threads/create-question', (req, res) => { // post question to the 
 });
 
 var id_question;
-
 router.get('/threads-answers/:id', (req, res) => {
     const id = req.params.id;
     id_question = req.params.id;
-    const queryString = "SELECT * FROM answers WHERE question_id = ?";
+    const queryString = "SELECT * FROM answers WHERE question_id = ? ORDER BY likes DESC";
     connect().query(queryString, [id], (error, rows, fields) => {
         if (error) {
             console.log("Failed to fetch answers" + error);
