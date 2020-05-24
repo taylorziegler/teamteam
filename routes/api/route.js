@@ -2,9 +2,6 @@
 const express = require('express');
 const mysql = require('mysql');
 const router = express.Router();
-const expressValidator = require('express-validator');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -17,6 +14,12 @@ const pool = mysql.createPool({
 function connect() { // connection to database : mySQL
     return pool;
 }
+
+// AUTH
+const expressValidator = require('express-validator');
+const passport = require('passport');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 // THREADS
 
@@ -32,8 +35,10 @@ router.post('/threads/create-topics', (req, res) => { // insert new thread in th
         res.end();
     });
 });
- 
+
 router.get('/threads', (req, res) => { // shows all threads
+    console.log(req.user);
+    console.log(req.isAuthenticated());
     const queryString = "SELECT * FROM threads";
     connect().query(queryString, (error, rows, fields) => {
         if (error) {
@@ -132,7 +137,6 @@ router.post('/create-account', (req, res) => {
         const email = req.body.email;
         const pass = req.body.password;  
         const queryString = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-        
         bcrypt.hash(pass, saltRounds, (err, hash) => {
             connect().query(queryString, [user, email, hash], (error, results, fields) => {
             if (error) {
@@ -140,10 +144,26 @@ router.post('/create-account', (req, res) => {
                 res.sendStatus(500);
                 return;
             }
-            res.end();
+            const user_id = results.insertId
+            req.login(user_id, (error) => {
+                if (error) {
+                    console.log("Failed to login " + error) 
+                    res.sendStatus(500);
+                    return;
+                }
+                res.redirect('threads'); // may need to edit this
+            });
             });
         });
     }
+});
+
+passport.serializeUser((user_id, done) => {
+    done(null, user_id);
+});
+
+passport.deserializeUser((user_id, done) => {
+    done(null, user_id);
 });
 
 module.exports = router;
