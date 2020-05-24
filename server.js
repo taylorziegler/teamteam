@@ -36,5 +36,5 @@ app.use(passport.session());
 app.use('/api', userRoutes);
 
 // PORTS
-const rest_api = process.env.PORT || 5000; 
+const rest_api = process.env.PORT || 46637; 
 app.listen(rest_api, () => { console.log(`Listening on port ${rest_api}`)});
