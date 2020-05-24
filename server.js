@@ -1,4 +1,5 @@
 // PACKAGES
+const expressValidator = require('express-validator');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const express = require('express');
@@ -14,6 +15,7 @@ const userRoutes = require('./routes/api/route');
 // MIDDLEWARES
 app.use(morgan('short'));
 app.use(bodyParser.json());
+app.use(expressValidator());
 app.use('/api', userRoutes);
 
 // PORTS
