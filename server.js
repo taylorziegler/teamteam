@@ -2,7 +2,11 @@
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const express = require('express');
+const path = require('path');
 const app = express();
+
+//.env
+require('dotenv').config();
 
 //ROUTES 
 const userRoutes = require('./routes/api/route');
