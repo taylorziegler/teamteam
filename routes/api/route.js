@@ -6,7 +6,7 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     host: 'localhost',
     user: 'root',
-    password: 'process.env.PASSWORD', 
+    password: process.env.PASSWORD, 
     database: 'tutorapp'
 });
 
