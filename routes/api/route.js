@@ -4,7 +4,6 @@ const mysql = require('mysql');
 const router = express.Router();
 
 const pool = mysql.createPool({
-    connectionLimit: 10,
     host: 'localhost',
     user: 'root',
     password: process.env.PASSWORD, 
@@ -22,7 +21,6 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // THREADS
-
 router.post('/threads/create-topics', (req, res) => { // insert new thread in the database
     const topic = req.body.topic // may need to change ******* based on form
     const queryString = "INSERT INTO threads (topic) VALUES (?)"
@@ -36,9 +34,7 @@ router.post('/threads/create-topics', (req, res) => { // insert new thread in th
     });
 });
 
-router.get('/threads', (req, res) => { // shows all threads
-    console.log(req.user);
-    console.log(req.isAuthenticated());
+router.get("/threads", authenticationMiddleware(), (req, res) => { // shows all threads
     const queryString = "SELECT * FROM threads";
     connect().query(queryString, (error, rows, fields) => {
         if (error) {
@@ -54,7 +50,7 @@ router.get('/threads', (req, res) => { // shows all threads
 });
 
 var id_thread;
-router.get('/threads-questions/:id', (req, res) => { // get all the questions corresponding the that thread
+router.get('/threads-questions/:id', authenticationMiddleware(), (req, res) => { // get all the questions corresponding the that thread
     const id = req.params.id;
     id_thread = req.params.id;
     const queryString = "SELECT * FROM questions WHERE thread_id = ? ORDER BY likes DESC"; 
@@ -86,7 +82,7 @@ router.post('/threads/create-question', (req, res) => { // post question to the 
 });
 
 var id_question;
-router.get('/threads-answers/:id', (req, res) => {
+router.get('/threads-answers/:id', authenticationMiddleware(), (req, res) => {
     const id = req.params.id;
     id_question = req.params.id;
     const queryString = "SELECT * FROM answers WHERE question_id = ? ORDER BY likes DESC";
@@ -118,7 +114,6 @@ router.post('/threads/create-answer', (req, res) => {
 });
 
 // AUTH
-
 router.post('/create-account', (req, res) => {
     // username; email; password & repassword
     req.checkBody('username', 'Username field cannot be empty.').notEmpty();
@@ -151,7 +146,7 @@ router.post('/create-account', (req, res) => {
                     res.sendStatus(500);
                     return;
                 }
-                res.redirect('threads'); // may need to edit this
+                res.redirect("threads"); // may need to change
             });
             });
         });
@@ -165,5 +160,13 @@ passport.serializeUser((user_id, done) => {
 passport.deserializeUser((user_id, done) => {
     done(null, user_id);
 });
+
+function authenticationMiddleware() {  
+	return (req, res, next) => {
+	    if (req.isAuthenticated()) return next();
+        res.json('Please log in to your account.') // we may need to change this
+        res.end();
+	}
+}
 
 module.exports = router;
