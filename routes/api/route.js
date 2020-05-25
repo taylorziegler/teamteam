@@ -113,8 +113,18 @@ router.post('/threads/create-answer', (req, res) => {
     });
 });
 
+router.get('/login-failed', (req, res) => {
+    res.json('Login failed, please try again.');
+});
+
 // AUTH
-router.post('/create-account', (req, res) => {
+router.post('/login', passport.authenticate(
+    'local', {
+    successRedirect: "threads",
+    failureRedirect: "login-failed" // may need to change
+}));
+
+router.post('/register', (req, res, next) => {
     // username; email; password & repassword
     req.checkBody('username', 'Username field cannot be empty.').notEmpty();
     req.checkBody('username', 'Username must be between 4-15 characters long.').len(4, 15);
@@ -147,6 +157,7 @@ router.post('/create-account', (req, res) => {
                     return;
                 }
                 res.redirect("threads"); // may need to change
+                next();
             });
             });
         });
