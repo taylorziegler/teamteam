@@ -51,6 +51,7 @@ app.use(passport.session());
 // ROUTES
 app.use('/api', userRoutes);
 
+// logging in  
 passport.use(new LocalStrategy(
     function(username, password, done) {
         const connection = mysql.createConnection({
@@ -64,16 +65,16 @@ passport.use(new LocalStrategy(
             if (error) {done(error)}; // fix this
             if (results.length === 0) {
                 done(null, false);
+            } else {
+                const hash = results[0].password.toString();
+                bycrypt.compare(password, hash, (error, response) => {
+                    if (response === true) {
+                        return done(null, {user_id: results[0].id});
+                    }  else {
+                        return done(null, false);
+                    }
+                });
             }
-            const hash = results[0].password.toString();
-
-            bycrypt.compare(password, hash, (error, response) => {
-                if (response === true) {
-                    return done(null, {user_id: results[0].id});
-                }  else {
-                    return done(null, false);
-                }
-            });
         });
     }
 ));
