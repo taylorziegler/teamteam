@@ -9,9 +9,6 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(
-        title: Text("Notifications"),
-      ),
         body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

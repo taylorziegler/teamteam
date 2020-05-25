@@ -14,13 +14,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tutor Team',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.amber,
+        primaryColor: Colors.yellow[200],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Tutor Team'),
     );
   }
 }
+
+
 
 // ------------------------- myhomepage -------------------------
 class MyHomePage extends StatefulWidget {
@@ -39,6 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.yellow[100],
+      appBar: AppBar(
+        title: Image.asset('lib/assets/ttlogo.png', width: 60, height: 60),
+      ),
       body: _children[_currentIndex],
       bottomNavigationBar: new BottomNavigationBar(
           onTap: onTabTapped,
