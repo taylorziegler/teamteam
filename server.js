@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const randomstring = require('randomstring');
 const session = require('express-session');
 const passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 const MySQLStore = require('express-mysql-session')(session);
 const bycrypt = require('bcrypt');
 
