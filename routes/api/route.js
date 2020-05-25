@@ -54,7 +54,7 @@ var id_thread;
 router.get('/threads-questions/:id', authenticationMiddleware(), (req, res) => { // get all the questions corresponding the that thread
     const id = req.params.id;
     id_thread = req.params.id;
-    const queryString = "SELECT * FROM questions WHERE thread_id = ? ORDER BY likes DESC"; 
+    const queryString = "SELECT * FROM questions WHERE thread_id = ?"; 
     connect().query(queryString, [id], (error, rows, fields) => {
         if (error) {
             console.log("Failed to fetch questions " + error);
@@ -62,7 +62,7 @@ router.get('/threads-questions/:id', authenticationMiddleware(), (req, res) => {
             return;
         }
         const questions = rows.map((row) => {
-            return {question : row.question, likes : row.likes, id : row.id}
+            return {question : row.question, id : row.id}
         });
         res.json(questions);
     });
@@ -86,7 +86,7 @@ var id_question;
 router.get('/threads-answers/:id', authenticationMiddleware(), (req, res) => {
     const id = req.params.id;
     id_question = req.params.id;
-    const queryString = "SELECT * FROM answers WHERE question_id = ? ORDER BY likes DESC";
+    const queryString = "SELECT * FROM answers WHERE question_id = ?";
     connect().query(queryString, [id], (error, rows, fields) => {
         if (error) {
             console.log("Failed to fetch answers " + error);
@@ -94,7 +94,7 @@ router.get('/threads-answers/:id', authenticationMiddleware(), (req, res) => {
             return;
         }
         const questions = rows.map((row) => {
-            return {answer : row.answer, likes : row.likes, id : row.id}
+            return {answer : row.answer, id : row.id}
         });
         res.json(questions);
     });
@@ -170,22 +170,6 @@ router.post('/register', (req, res, next) => {
     }
 });
 
-passport.serializeUser((user_id, done) => {
-    done(null, user_id);
-});
-
-passport.deserializeUser((user_id, done) => {
-    done(null, user_id);
-});
-
-function authenticationMiddleware() {  
-	return (req, res, next) => {
-	    if (req.isAuthenticated()) return next();
-        res.json('Please log in to your account.') // we may need to change this
-        res.end();
-	}
-}
-
 // ACCOUNTS 
 router.get('/users/:id', (req, res) => {
     const id = req.params.id;
@@ -202,5 +186,36 @@ router.get('/users/:id', (req, res) => {
         res.json(account);
     }); 
 });
+
+router.get('/users', authenticationMiddleware(), (req, res) => {
+    queryString = "SELECT * FROM users"
+    connect().query(queryString, (error, rows, fields) => {
+        if (error) {
+            console.log("Failed to fetch all users");
+            res.sendStatus(500);
+            return;
+        }
+        const allUsers = rows.map((row) => {
+            return { first : row.first, last : row.last }
+        });
+        res.json(allUsers)
+    });
+})
+
+passport.serializeUser((user_id, done) => {
+    done(null, user_id);
+});
+
+passport.deserializeUser((user_id, done) => {
+    done(null, user_id);
+});
+
+function authenticationMiddleware() {  
+	return (req, res, next) => {
+	    if (req.isAuthenticated()) return next();
+        res.json('Please log in to your account.') // we may need to change this
+        res.end();
+	}
+}
 
 module.exports = router;
