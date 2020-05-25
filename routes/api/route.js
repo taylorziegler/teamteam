@@ -19,6 +19,7 @@ const expressValidator = require('express-validator');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+var currUser;
 
 // THREADS
 router.post('/threads/create-topics', (req, res) => { // insert new thread in the database
@@ -141,15 +142,20 @@ router.post('/register', (req, res, next) => {
         const user = req.body.username;
         const email = req.body.email;
         const pass = req.body.password;  
-        const queryString = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+        const interests = req.body.interests;
+        const help = req.body.help;
+        const first = req.body.first;
+        const last = req.body.last;
+        const queryString = "INSERT INTO users (username, email, password, first, last, interests, help) VALUES (?, ?, ?, ?, ?, ?, ?)"
         bcrypt.hash(pass, saltRounds, (err, hash) => {
-            connect().query(queryString, [user, email, hash], (error, results, fields) => {
+            connect().query(queryString, [user, email, hash, first, last, interests, help], (error, results, fields) => {
             if (error) {
                 console.log("Failed to register a new user " + error)
                 res.sendStatus(500);
                 return;
             }
             const user_id = results.insertId
+            currUser = results.insertId;
             req.login(user_id, (error) => {
                 if (error) {
                     console.log("Failed to login " + error) 
@@ -179,5 +185,22 @@ function authenticationMiddleware() {
         res.end();
 	}
 }
+
+// ACCOUNTS 
+router.get('/users/:id', (req, res) => {
+    const id = req.params.id;
+    const queryString = "SELECT * FROM users WHERE id = ?";
+    connect().query(queryString, [id], (error, rows, fields) => {
+        if (error) {
+            console.log("Could not view user");
+            res.sendStatus(500);
+            return;
+        }
+        const account = rows.map((row) => {
+            return { firstName: row.first, lastName: row.last, interest: row.interests, needHelp: row.help }
+        });
+        res.json(account);
+    }); 
+});
 
 module.exports = router;
